@@ -1,15 +1,16 @@
+import { useAuth } from "./components/auth_provider";
+import CoconutController from "./components/coconut_controller";
 import DefaultLayout from "./layouts/default";
 
 import Landing from "@/components/landing";
-/* import DocsPage from "@/pages/docs";
-import PricingPage from "@/pages/pricing";
-import BlogPage from "@/pages/blog";
-import AboutPage from "@/pages/about";
- */
+
 function App() {
+  const auth = useAuth();
+
   return (
     <DefaultLayout>
-      <Landing />
+      {!auth.token && <Landing />}
+      {auth.token && <CoconutController />}
     </DefaultLayout>
   );
 }

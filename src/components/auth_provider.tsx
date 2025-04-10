@@ -39,19 +39,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     : null;
   const [user, setUser] = useState<string | null>(storedInfo?.email);
   const [token, setToken] = useState(storedInfo?.token || "");
-  const naigate = useNavigate();
+  const navigate = useNavigate();
 
   const login = (data: LoginType) => {
     const t = randomAlphaNumeric(50);
 
-    setTimeout(() => {
-      const obj = { ...data, token: t };
+    const obj = { ...data, token: t };
 
-      setUser(data.email);
-      setToken(t);
-      localStorage.setItem("user", JSON.stringify(obj));
-      naigate("/");
-    }, 1000);
+    setUser(data.email);
+    setToken(t);
+    localStorage.setItem("user", JSON.stringify(obj));
+    navigate("/");
   };
 
   const logout = () => {

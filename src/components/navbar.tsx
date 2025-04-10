@@ -4,10 +4,12 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenuToggle,
 } from "@heroui/navbar";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
+
+import { useAuth } from "./auth_provider";
+import { LogOutButton } from "./user_controller";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -15,6 +17,8 @@ import { TwitterIcon, GithubIcon, DiscordIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
 
 export const Navbar = () => {
+  const auth = useAuth();
+
   return (
     <HeroUINavbar shouldHideOnScroll maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -62,14 +66,11 @@ export const Navbar = () => {
           </Link>
           <ThemeSwitch />
         </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
+        {auth.token && (
+          <NavbarItem className="hidden sm:flex gap-2">
+            <LogOutButton />
+          </NavbarItem>
+        )}
       </NavbarContent>
     </HeroUINavbar>
   );

@@ -10,7 +10,7 @@ import { useAuth } from "@/components/auth_provider";
 export default function LandingLoginOptions() {
   const auth = useAuth();
 
-  const login = (e: MouseEvent) => {
+  const loginHandler = (e: MouseEvent) => {
     switch ((e.currentTarget as Element).id) {
       case "#guest":
         const data = {
@@ -53,7 +53,7 @@ export default function LandingLoginOptions() {
         <Button
           className={buttonStyles({ variant: "bordered", radius: "full" })}
           id="#guest"
-          onMouseDown={(event) => login(event)}
+          onMouseDown={(event) => loginHandler(event)}
         >
           <span>
             Try a non-permanent <Code color="primary">guest account</Code>
@@ -61,5 +61,22 @@ export default function LandingLoginOptions() {
         </Button>
       </div>
     </>
+  );
+}
+
+export function LogOutButton() {
+  const auth = useAuth();
+
+  const logoutHandler = () => {
+    auth.logout();
+  };
+
+  return (
+    <Button
+      className={buttonStyles({ variant: "bordered", radius: "full" })}
+      onMouseDown={logoutHandler}
+    >
+      Log Out
+    </Button>
   );
 }
