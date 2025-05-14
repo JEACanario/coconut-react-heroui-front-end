@@ -1,9 +1,12 @@
-import { MouseEvent, useRef, useState } from "react";
+import { Console } from "console";
+import { FormEvent, MouseEvent, useRef, useState } from "react";
+
 import { Code } from "@heroui/code";
 import { button as buttonStyles } from "@heroui/theme";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
+import { Checkbox } from "@heroui/checkbox";
 
 import { siteConfig } from "@/config/site";
 import { GithubIcon } from "@/components/icons";
@@ -19,13 +22,24 @@ export default function LandingLoginOptions() {
 
   const auth = useAuth();
 
+  const handleSubmit = (e: FormEvent) => {
+    {
+      e.preventDefault();
+      let data = Object.fromEntries(new FormData(e.currentTarget));
+
+      console.log(data);
+      setAction(`submit ${JSON.stringify(data)}`);
+    }
+  };
+
   const loginHandler = (e: MouseEvent) => {
     switch ((e.currentTarget as Element).id) {
       case "#guest":
         const data = {
           email: "guest@nomail.com",
           password: "fake",
-          remember_me: false,
+          username: "",
+          remember: false,
         };
 
         auth.login(data);
@@ -76,12 +90,7 @@ export default function LandingLoginOptions() {
         <Form
           className="w-full max-w-xs flex flex-col gap-4"
           onReset={() => setAction("reset")}
-          onSubmit={(e) => {
-            e.preventDefault();
-            let data = Object.fromEntries(new FormData(e.currentTarget));
-
-            setAction(`submit ${JSON.stringify(data)}`);
-          }}
+          onSubmit={handleSubmit}
         >
           <Input
             isRequired
@@ -110,6 +119,11 @@ export default function LandingLoginOptions() {
               Reset
             </Button>
           </div>
+
+          <Checkbox defaultSelected value="true" name="remember" size="sm">
+            Remember me?
+          </Checkbox>
+
           {action && (
             <div className="text-small text-default-500">
               Action: <code>{action}</code>

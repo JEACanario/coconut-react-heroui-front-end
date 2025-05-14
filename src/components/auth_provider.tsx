@@ -3,8 +3,9 @@ import { useNavigate } from "react-router";
 
 type LoginType = {
   email: string;
+  username: string;
   password: string;
-  remember_me?: boolean | undefined;
+  remember: boolean | false;
 };
 
 interface ProviderProps {
