@@ -1,36 +1,23 @@
-import { Console } from "console";
-import { FormEvent, MouseEvent, useRef, useState } from "react";
-
+import { MouseEvent, useRef, useState } from "react";
 import { Code } from "@heroui/code";
 import { button as buttonStyles } from "@heroui/theme";
 import { Button } from "@heroui/button";
-import { Form } from "@heroui/form";
-import { Input } from "@heroui/input";
-import { Checkbox } from "@heroui/checkbox";
+
+import LoginForm from "./login_form";
 
 import { siteConfig } from "@/config/site";
 import { GithubIcon } from "@/components/icons";
 import { useAuth } from "@/components/auth_provider";
 
 import "../styles/user_controller.css";
+import RegistrationForm from "./registration_form";
 
 export default function LandingLoginOptions() {
-  const [action, setAction] = useState("");
   const formRef = useRef<HTMLDivElement | null>(null);
-
+  const registerFormRef = useRef<HTMLDivElement | null>(null);
   let [option, setOption] = useState("none");
 
   const auth = useAuth();
-
-  const handleSubmit = (e: FormEvent) => {
-    {
-      e.preventDefault();
-      let data = Object.fromEntries(new FormData(e.currentTarget));
-
-      console.log(data);
-      setAction(`submit ${JSON.stringify(data)}`);
-    }
-  };
 
   const loginHandler = (e: MouseEvent) => {
     switch ((e.currentTarget as Element).id) {
@@ -45,9 +32,14 @@ export default function LandingLoginOptions() {
         auth.login(data);
         break;
       case "#login":
-        option === "login" ? setOption("") : setOption("login");
+        option === "login" ? setOption("none") : setOption("login");
         break;
+      case "#register":
+        option === "register" ? setOption("none") : setOption("register");
+        break;
+
       default:
+        setOption("none");
         break;
     }
   };
@@ -73,6 +65,9 @@ export default function LandingLoginOptions() {
           className={buttonStyles({ variant: "bordered", radius: "full" })}
           href={siteConfig.links.github}
           id="#register"
+          onMouseDown={(event) => {
+            loginHandler(event);
+          }}
         >
           <GithubIcon size={20} />
           Create Account
@@ -87,49 +82,19 @@ export default function LandingLoginOptions() {
             : { height: "0px" }
         }
       >
-        <Form
-          className="w-full max-w-xs flex flex-col gap-4"
-          onReset={() => setAction("reset")}
-          onSubmit={handleSubmit}
-        >
-          <Input
-            isRequired
-            errorMessage="Please enter a valid username"
-            label="Username"
-            labelPlacement="outside"
-            name="username"
-            placeholder="Enter your username"
-            type="text"
-          />
+        <LoginForm />
+      </div>
 
-          <Input
-            isRequired
-            errorMessage="Please enter a valid email"
-            label="Password"
-            labelPlacement="outside"
-            name="Password"
-            placeholder="Enter your password"
-            type="Password"
-          />
-          <div className="flex gap-2">
-            <Button color="primary" type="submit">
-              Submit
-            </Button>
-            <Button type="reset" variant="flat">
-              Reset
-            </Button>
-          </div>
-
-          <Checkbox defaultSelected value="true" name="remember" size="sm">
-            Remember me?
-          </Checkbox>
-
-          {action && (
-            <div className="text-small text-default-500">
-              Action: <code>{action}</code>
-            </div>
-          )}
-        </Form>
+      <div
+        ref={registerFormRef}
+        className="content-parent"
+        style={
+          option === "register"
+            ? { height: registerFormRef.current?.scrollHeight + "px" }
+            : { height: "0px" }
+        }
+      >
+        <RegistrationForm />
       </div>
 
       <div className="mt-8">
