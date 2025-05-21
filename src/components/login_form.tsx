@@ -2,16 +2,24 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Checkbox } from "@heroui/checkbox";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
+
+import { useAuth } from "./auth_provider";
 
 export default function LoginForm() {
+  const auth = useAuth();
+
   const handleReset = () => {};
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     {
       e.preventDefault();
       let data = Object.fromEntries(new FormData(e.currentTarget));
 
-      console.log(data);
+      auth.login({
+        email: data.Email as string,
+        password: data.Password as string,
+        remember: data.Remember as string,
+      });
     }
   };
 
@@ -24,9 +32,9 @@ export default function LoginForm() {
       <Input
         isRequired
         errorMessage="Please enter a valid e-mail"
-        label="e-mail"
+        label="E-mail"
         labelPlacement="outside"
-        name="email"
+        name="Email"
         placeholder="Enter your e-mail"
         type="text"
       />
@@ -49,7 +57,7 @@ export default function LoginForm() {
         </Button>
       </div>
 
-      <Checkbox defaultSelected name="remember" size="sm" value="true">
+      <Checkbox defaultSelected name="Remember" size="sm" value="true">
         Remember me?
       </Checkbox>
     </Form>

@@ -25,8 +25,7 @@ export default function LandingLoginOptions() {
         const data = {
           email: "guest@nomail.com",
           password: "fake",
-          username: "",
-          remember: false,
+          remember: "false",
         };
 
         auth.login(data);
