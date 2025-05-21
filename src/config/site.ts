@@ -59,6 +59,9 @@ export const siteConfig = {
       href: "/logout",
     },
   ],
+  api_endpoints: {
+    register: "https://localhost:7260/register",
+  },
   links: {
     github: "/",
     twitter: "/",

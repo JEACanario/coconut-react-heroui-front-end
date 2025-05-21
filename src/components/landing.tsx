@@ -16,6 +16,7 @@ export default function Landing() {
           <span className={title({ color: "green" }) + " title"}>uT</span>
           <span className={title()}>ility&nbsp;</span>
         </div>
+
         <div className="flex max-w-lg text-center justify-center">
           <div className={subtitle({ class: "mt-4" })}>
             Your long-form content companion

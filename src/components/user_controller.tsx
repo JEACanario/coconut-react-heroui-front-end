@@ -4,13 +4,13 @@ import { button as buttonStyles } from "@heroui/theme";
 import { Button } from "@heroui/button";
 
 import LoginForm from "./login_form";
+import RegistrationForm from "./registration_form";
 
 import { siteConfig } from "@/config/site";
 import { GithubIcon } from "@/components/icons";
 import { useAuth } from "@/components/auth_provider";
 
 import "../styles/user_controller.css";
-import RegistrationForm from "./registration_form";
 
 export default function LandingLoginOptions() {
   const formRef = useRef<HTMLDivElement | null>(null);
@@ -78,7 +78,12 @@ export default function LandingLoginOptions() {
         className="content-parent"
         style={
           option === "login"
-            ? { height: formRef.current?.scrollHeight + "px" }
+            ? {
+                height:
+                  (
+                    Number.parseInt(String(formRef.current?.scrollHeight)) + 40
+                  ).toString() + "px",
+              }
             : { height: "0px" }
         }
       >
@@ -90,7 +95,12 @@ export default function LandingLoginOptions() {
         className="content-parent"
         style={
           option === "register"
-            ? { height: registerFormRef.current?.scrollHeight + "px" }
+            ? {
+                height:
+                  (
+                    Number.parseInt(String(formRef.current?.scrollHeight)) + 40
+                  ).toString() + "px",
+              }
             : { height: "0px" }
         }
       >
