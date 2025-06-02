@@ -57,7 +57,7 @@ export const Navbar = () => {
         <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
-        {auth.token && (
+        {auth.user && (
           <NavbarItem className="hidden sm:flex gap-2">
             <LogOutButton />
           </NavbarItem>

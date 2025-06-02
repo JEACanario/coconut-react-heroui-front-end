@@ -63,6 +63,7 @@ export const siteConfig = {
     register: "https://localhost:7260/register",
     login_cookie: "https://localhost:7260/login?useCookies=true",
     login_token: "https://localhost:7260/login",
+    user_coconuts: "https://localhost:7260/coconut/",
   },
   links: {
     github: "/",

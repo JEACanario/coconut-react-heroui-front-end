@@ -9,8 +9,8 @@ function App() {
 
   return (
     <DefaultLayout>
-      {!auth.token && <Landing />}
-      {auth.token && <CoconutController />}
+      {!auth.user && <Landing />}
+      {auth.user && <CoconutController />}
     </DefaultLayout>
   );
 }

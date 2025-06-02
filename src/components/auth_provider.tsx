@@ -51,9 +51,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const obj = { email: data.email, token: t };
 
+    //Login with cookie or temporary token
     if (data.remember === "true") {
-      console.log("shouldnt be seeing this, like, ever.");
+      const response = await fetch(siteConfig.api_endpoints.login_cookie, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
+
+      console.log(response);
+      t = "";
     } else {
+      //token
       const response = await fetch(siteConfig.api_endpoints.login_token, {
         headers: {
           Accept: "application/json",
