@@ -3,28 +3,7 @@ export type SiteConfig = typeof siteConfig;
 export const siteConfig = {
   name: "CoCoNuT",
   description: "COntent COmpanion Note UTility",
-  navItems: [
-    {
-      label: "Home",
-      href: "/",
-    },
-    {
-      label: "Docs",
-      href: "/docs",
-    },
-    {
-      label: "Pricing",
-      href: "/pricing",
-    },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
-    },
-  ],
+  navItems: [],
   navMenuItems: [
     {
       label: "Profile",
@@ -64,6 +43,8 @@ export const siteConfig = {
     login_cookie: "https://localhost:7260/login?useCookies=true",
     login_token: "https://localhost:7260/login",
     user_coconuts: "https://localhost:7260/coconut/",
+    coconut_entries: "https://localhost:7260/coconut/",
+    coconut_path: "https://localhost:7260/coconut/",
   },
   links: {
     github: "/",
