@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
+import CoconutNew from "./coconut_new";
 import CoconutCard from "./coconut_card";
 import { useAuth } from "./auth_provider";
 
 import { siteConfig } from "@/config/site";
 import "../styles/coconut_controller.css";
 import CoconutViewCard from "./coconut_view_card";
-import { select, Spacer } from "@heroui/react";
+import { Button, select, Spacer } from "@heroui/react";
 
 type Coconut = {
   id: string;
@@ -25,6 +26,7 @@ export default function CoconutController() {
   const [active_selection, setActiveSelection] = useState(false);
   const [coconuts, setCoconuts] = useState(new Array<Coconut>());
   const [selected_coconut, setSelectedCoconut] = useState<Coconut>();
+  const [start_new, setStartNew] = useState(false);
 
   function GetUserCoconuts() {
     fetch(siteConfig.api_endpoints.user_coconuts, {
@@ -56,25 +58,46 @@ export default function CoconutController() {
     [auth],
   );
 
+  function HandleNewCoconut(): void {
+    start_new ? setStartNew(false) : setStartNew(true);
+  }
+
   return (
     <>
-      {active_selection ? (
+      <Button
+        fullWidth={true}
+        color="primary"
+        variant="light"
+        onPress={HandleNewCoconut}
+      >
+        {start_new ? "Back to your coconuts" : "Start a new Coconut?"}
+      </Button>
+
+      {/* // If start_new is true, show the form to create a new coconut */}
+
+      {start_new && <CoconutNew />}
+
+      {/*       // If active_selection is true and active_selection is disabled, show the CoconutViewCard
+      // Otherwise, show the list of coconuts */}
+      {active_selection && !start_new ? (
         <CoconutViewCard coconut={selected_coconut} onBack={HandleBack} />
       ) : (
-        <div className="card_grid flex-grid flex-wrap justify-between flex-gap-4">
-          {coconuts.map((coconut) => (
-            <>
-              <CoconutCard
-                key={coconut.id}
-                cover_url={coconut.coverUrl}
-                id={coconut.id}
-                isbn={coconut.isbn}
-                on_press={() => HandleSelection(coconut)}
-              />
-              <Spacer x={4} />
-            </>
-          ))}
-        </div>
+        !start_new && (
+          <div className="card_grid justify-between">
+            {coconuts.map((coconut) => (
+              <>
+                <CoconutCard
+                  key={coconut.id}
+                  cover_url={coconut.coverUrl}
+                  id={coconut.id}
+                  isbn={coconut.isbn}
+                  on_press={() => HandleSelection(coconut)}
+                />
+                <Spacer x={4} />
+              </>
+            ))}
+          </div>
+        )
       )}
     </>
   );

@@ -1,6 +1,8 @@
+import type { Entry } from "@/types/entry";
 import { dateInput, Image } from "@heroui/react";
 import { siteConfig } from "@/config/site";
 import { useEffect, useState } from "react";
+import EntryCard from "./entry_card";
 
 type Coconut = {
   id: string;
@@ -12,14 +14,6 @@ type Coconut = {
   userId: string;
   user: string;
   entries: string;
-};
-
-type Entry = {
-  id: string;
-  title: string;
-  creationDate: Date;
-  content: string;
-  coconutId: string;
 };
 
 export interface CoconutViewCardProps {
@@ -50,19 +44,6 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
   const book_info_url = `https://openlibrary.org/api/books?bibkeys=OLID:${props.coconut.isbn}&jscmd=data&format=json`;
 
   function GetCoconutEntries(id: string): void {
-    //Get the coconut details from API
-    /*     fetch(`${siteConfig.api_endpoints.coconut_path}${id}/`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => setCoconut(data));
- */
-
-    console.log(props);
     // Get the related entries from API
 
     fetch(`${siteConfig.api_endpoints.coconut_path}${id}/entry`, {
@@ -74,7 +55,6 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setEntries(data);
       });
 
@@ -96,7 +76,6 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         var key = Object.keys(data)[0];
         const book = data[key];
 
@@ -121,13 +100,14 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
     function () {
       GetCoconutEntries(props.coconut.id);
     },
-    [props.id],
+    [props.coconut.id],
   );
 
   return (
-    <div className="coconut-view-card flex">
-      <div className="coconut-details">
+    <div className="coconut-view-card flex gap-10 justify-between">
+      <div className="coconut-details w-400">
         <h2>{title}</h2>
+        {/* Left Side Image */}
         <button
           className="coconut-cover flex items-center justify-center"
           onClick={() => HandleBack()}
@@ -141,21 +121,14 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
           />
         </button>
         <p>Details for Coconut ID: {coconut.id}</p>
-        <div className="entries-list">
-          {entries.map((entry) => (
-            <div key={entry.id} className="entry-item">
-              <h3>{entry.title}</h3>
-              <p>{entry.content}</p>
-              <small>
-                Created on: {new Date(entry.creationDate).toLocaleDateString()}
-              </small>
-            </div>
-          ))}
-          {/* Additional details and functionality can be added here */}
-        </div>
+        {/* Boook details go here */}
+
       </div>
-      <div className="coconut-display">
-        <p>Details go here</p>
+      <div className="coconut-entry-list flex flex-start flex-col items-center gap-4 w-900">
+        {/* Entry list */}
+            {entries.map((entry) => (
+            <EntryCard key={entry.id} entry={entry} /> // Render each entry using EntryCard component
+          ))}
       </div>
     </div>
   );
