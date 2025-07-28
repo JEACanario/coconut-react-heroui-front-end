@@ -27,6 +27,8 @@
     "@heroui/system": "2.4.13",
     "@heroui/theme": "2.4.13",
     "@heroui/use-theme": "2.1.6",
+    "@internationalized/date": "^3.8.2",
+    "@react-aria/i18n": "^3.12.10",
     "@react-aria/visually-hidden": "3.8.21",
     "@react-types/shared": "3.28.0",
     "clsx": "2.1.1",

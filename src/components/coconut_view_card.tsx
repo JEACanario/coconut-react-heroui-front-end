@@ -55,11 +55,16 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
     })
       .then((res) => res.json())
       .then((data) => {
-        setEntries(data);
-      });
+        let data2 = data.map((entry: any) => ({
+          ...entry,
+          creationDate: new Date(entry.creationDate),
+        }));
 
-    // Show entries in the console
-    console.log(entries);
+        console.log("Parsed Coconut entries:", data2);
+        setEntries(data2);
+        console.log("Parsed Type", typeof data2[0].creationDate);
+        console.log("DAte formated:", data2[0].creationDate.toISOString());
+      });
 
     // Set the cover URL and book info URL
     setCoconut((prev) => ({
@@ -122,13 +127,12 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
         </button>
         <p>Details for Coconut ID: {coconut.id}</p>
         {/* Boook details go here */}
-
       </div>
       <div className="coconut-entry-list flex flex-start flex-col items-center gap-4 w-900">
         {/* Entry list */}
-            {entries.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} /> // Render each entry using EntryCard component
-          ))}
+        {entries.map((entry) => (
+          <EntryCard key={entry.id} entry={entry} edit={false} /> // Render each entry using EntryCard component
+        ))}
       </div>
     </div>
   );
