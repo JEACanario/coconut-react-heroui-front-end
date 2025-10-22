@@ -196,9 +196,43 @@ export function BaselineEdit(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path
-        fill="currentColor"
         d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83l3.75 3.75z"
-      ></path>
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function BaselineSave(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+      {...props}
+    >
+      <path
+        d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V7zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3m3-10H5V5h10z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function BaselineClear(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      height="1em"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
+        fill="currentColor"
+      />
     </svg>
   );
 }

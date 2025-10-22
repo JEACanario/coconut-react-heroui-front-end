@@ -1,19 +1,16 @@
 import type { Entry } from "@/types/entry";
 
-import { BaselineEdit } from "./icons";
-
 import {
+  Button,
   Card,
   CardHeader,
   CardBody,
   CardFooter,
-  Divider,
-  Button,
   Textarea,
   Input,
   DatePicker,
+  PressEvent,
 } from "@heroui/react";
-
 import {
   getLocalTimeZone,
   parseAbsoluteToLocal,
@@ -21,6 +18,9 @@ import {
   ZonedDateTime,
 } from "@internationalized/date";
 import { useState } from "react";
+
+import { BaselineClear, BaselineEdit, BaselineSave } from "./icons";
+import { siteConfig } from "@/config/site";
 
 export interface EntryCardProps {
   entry: Entry;
@@ -31,7 +31,7 @@ export default function EntryCard(props: EntryCardProps) {
   const [edit, setEdit] = useState(props.edit);
   const entry = props.entry;
   const [title, setTitle] = useState(entry.title || "Untitled Entry");
-  const creationDate =
+  let creationDate =
     parseAbsoluteToLocal(entry.creationDate.toISOString()) ||
     parseAbsoluteToLocal(
       today(getLocalTimeZone()).toDate(getLocalTimeZone()).toISOString(),
@@ -43,8 +43,6 @@ export default function EntryCard(props: EntryCardProps) {
   console.log("EntryCard", entry);
 
   function handleEdit(e: PressEvent): void {
-    if (edit) saveChanges();
-
     setEdit((prev) => !prev);
   }
 
@@ -52,7 +50,56 @@ export default function EntryCard(props: EntryCardProps) {
     entry.title = title;
     entry.content = content;
     entry.creationDate = date.toDate();
+    creationDate = date;
     console.log("Changes saved for entry:", entry);
+  }
+
+  function handleSave(e: PressEvent): void {
+    if(entry.id !== ""){
+    saveChanges();
+    handleEdit(e);
+    console.log("Changes saved for entry:", entry);
+
+    } else {
+      // Creating a new entry
+      const newEntryData = {
+        title: title,
+        content: content,
+        creationDate: date.toDate().toISOString(),
+        coconutId: entry.coconutId,
+      };
+
+      fetch(
+        `${siteConfig.api_endpoints.coconut_path}${entry.coconutId}/entry`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify(newEntryData),
+        },
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("New entry created:", data);
+          // Update the entry with the returned data (like the new ID)
+          entry.id = data.id;
+          handleEdit(e);
+        })
+        .catch((error) => {
+          console.error("Error creating new entry:", error);
+        });
+    }
+  }
+
+  function handleClear(e: PressEvent): void {
+    setTitle(entry.title);
+    setContent(entry.content);
+    setDate(creationDate);
+    handleEdit(e);
+    console.log("Changes cleared for entry:", entry);
   }
 
   return (
@@ -69,16 +116,39 @@ export default function EntryCard(props: EntryCardProps) {
               onValueChange={setTitle}
             />
           </div>
-          <div className="gap-4 items-center justify-self-end">
-            <Button
-              isIconOnly
-              aria-label="Like"
-              color="secondary"
-              variant={edit ? "faded" : "light"}
-              onPress={(e) => handleEdit(e)}
-            >
-              <BaselineEdit />
-            </Button>
+          <div className="gap-4 items-center flex justify-self-end">
+            {edit && (
+              <Button
+                isIconOnly
+                aria-label="Like"
+                color="secondary"
+                variant={edit ? "faded" : "light"}
+                onPress={(e) => handleClear(e)}
+              >
+                <BaselineClear />
+              </Button>
+            )}
+            {edit ? (
+              <Button
+                isIconOnly
+                aria-label="Like"
+                color="secondary"
+                variant={edit ? "faded" : "light"}
+                onPress={(e) => handleSave(e)}
+              >
+                <BaselineSave />
+              </Button>
+            ) : (
+              <Button
+                isIconOnly
+                aria-label="Like"
+                color="secondary"
+                variant={edit ? "faded" : "light"}
+                onPress={(e) => handleEdit(e)}
+              >
+                <BaselineEdit />
+              </Button>
+            )}
           </div>
         </CardHeader>
 
@@ -101,14 +171,11 @@ export default function EntryCard(props: EntryCardProps) {
             granularity="day"
             className="max-w-[284px]"
             value={date}
-            onChange={setDate}
             variant={edit ? "bordered" : "underlined"}
+            onChange={setDate}
           />
         </CardFooter>
       </Card>
     </>
   );
-}
-function saveChanges() {
-  throw new Error("Function not implemented.");
 }

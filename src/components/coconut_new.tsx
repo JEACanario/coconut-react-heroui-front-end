@@ -1,11 +1,35 @@
-import { Card, CardFooter, Image, Button, Form, Input } from "@heroui/react";
-import { hasOwnProperty, useState } from "react";
+import { siteConfig } from "@/config/site";
+import {
+  Card,
+  CardFooter,
+  Image,
+  Button,
+  Form,
+  Input,
+  PressEvent,
+} from "@heroui/react";
+import { useState } from "react";
 import { debounce } from "ts-debounce";
 
-export default function CoconutNew() {
+import { useAuth } from "./auth_provider";
+
+export interface CoconutNewProps {
+  onNew: () => void;
+}
+
+export default function CoconutNew({ onNew }: CoconutNewProps) {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<any[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
+  const [newCoconutBook, setNewCoconutBook] = useState<Book | null>(null);
+  const auth = useAuth();
+
+  type Book = {
+    title: string;
+    author_name: string[];
+    olid: string;
+    cover_i: number;
+  };
 
   const handleSearch = (input: string) => {
     if (input?.length >= 3) setQuery(input);
@@ -31,20 +55,61 @@ export default function CoconutNew() {
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setResults([]);
+    setSelectedBook(null);
+    setNewCoconutBook(null);
     e.preventDefault();
     handleSearch(e.currentTarget.Title.value);
   };
 
-  function handleSelect(olid: string): void {
-    console.log("Selected book:", olid);
+  function handleSelect(book: Book): void {
+    console.log("Selected book:", book.olid);
     // If the book is already selected, deselect it
     // Otherwise, set it as the selected book
-    if (olid == selectedBook) {
+    if (book.olid == selectedBook) {
       setSelectedBook(null);
+      setNewCoconutBook(null);
 
       return;
     }
-    setSelectedBook(olid);
+    setNewCoconutBook(book);
+    setSelectedBook(book.olid);
+    console.log("New Coconut Book:", newCoconutBook);
+  }
+
+  async function createCoconut(e: PressEvent) {
+    console.log(`Creating coconut...`);
+    console.log("New Coconut Book at create:", newCoconutBook);
+
+    e.target.classList.toggle("invisible");
+    if (!newCoconutBook) {
+      console.error("No book selected for coconut creation.");
+      return;
+    }
+    // This will need to be replaced with additional data at some point
+    const coconutData = {
+      Id: 0,
+      Status: 0,
+      Isbn: newCoconutBook.olid,
+      CoverUrl: `https://covers.openlibrary.org/b/id/${newCoconutBook.cover_i}-M.jpg`,
+      StartDate: "0001-01-01",
+      EndDate: "0001-01-01",
+      UserId: null,
+      User: null,
+      Entries: [],
+    };
+
+    const res = await fetch(siteConfig.api_endpoints.coconut_path, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      mode: "cors",
+      body: JSON.stringify(coconutData),
+    });
+    onNew();
   }
 
   return (
@@ -62,7 +127,7 @@ export default function CoconutNew() {
           type="title"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             console.log("Input changed:", e.target.value);
-            const func = debounce(() => handleSearch(e.target.value), 500);
+            const func = debounce(() => handleSearch(e.target.value), 1000);
             func();
           }}
         />
@@ -74,14 +139,23 @@ export default function CoconutNew() {
         <div className="flex flex-wrap gap-4 mt-4">
           {results.map(
             (book) =>
-              (!selectedBook || book.cover_i === selectedBook) && (
+              (!selectedBook || book.cover_edition_key === selectedBook) && (
                 <Card
                   isPressable
                   isFooterBlurred
-                  key={book.olid}
+                  key={book.cover_edition_key}
                   className="border-none"
                   radius="lg"
-                  onPress={() => handleSelect(book.cover_i)}
+                  onPress={() => {
+                    console.log(`${book.cover_edition_key} ${book.title}`);
+
+                    handleSelect({
+                      olid: book.cover_edition_key,
+                      title: book.title,
+                      author_name: book.author_name,
+                      cover_i: book.cover_i,
+                    });
+                  }}
                 >
                   <Image
                     src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
@@ -103,7 +177,14 @@ export default function CoconutNew() {
       {selectedBook && (
         <div className="mt-4">
           <h2 className="text-xl font-bold">Selected Book</h2>
-          <p>{selectedBook}</p>
+          <Button
+            color="primary"
+            onPress={(e) => {
+              createCoconut(e);
+            }}
+          >
+            Create Coconut
+          </Button>
         </div>
       )}
     </>

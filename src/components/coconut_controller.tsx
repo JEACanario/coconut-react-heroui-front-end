@@ -61,6 +61,11 @@ export default function CoconutController() {
   function HandleNewCoconut(): void {
     start_new ? setStartNew(false) : setStartNew(true);
   }
+  function HandleCoconutCreated() {
+    setStartNew(false);
+    GetUserCoconuts();
+    HandleBack();
+  }
 
   return (
     <>
@@ -75,7 +80,7 @@ export default function CoconutController() {
 
       {/* // If start_new is true, show the form to create a new coconut */}
 
-      {start_new && <CoconutNew />}
+      {start_new && <CoconutNew onNew={HandleCoconutCreated} />}
 
       {/*       // If active_selection is true and active_selection is disabled, show the CoconutViewCard
       // Otherwise, show the list of coconuts */}

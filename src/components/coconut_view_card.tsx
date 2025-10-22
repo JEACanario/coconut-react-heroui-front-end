@@ -23,6 +23,7 @@ export interface CoconutViewCardProps {
 
 export default function CoconutViewCard(props: CoconutViewCardProps) {
   const [entries, setEntries] = useState(new Array<Entry>());
+  const [noEntries, setNoEntries] = useState({ status: false });
   const [selected_entry, setSelectedEntry] = useState(new Array<Entry>());
   const [coconut, setCoconut] = useState<Coconut>({
     id: "",
@@ -38,6 +39,14 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [author, setAuthor] = useState("");
+
+  const blankEntry: Entry = {
+    id: "",
+    title: "Create New Entry ?",
+    content: "Edit me!",
+    creationDate: new Date(),
+    coconutId: coconut.id,
+  };
 
   const cover_url = `https://covers.openlibrary.org/b/olid/${props.coconut.isbn}-M.jpg`;
 
@@ -62,6 +71,9 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
 
         console.log("Parsed Coconut entries:", data2);
         setEntries(data2);
+        console.log("Entries set in state:", data2.length);
+        console.log("No Entries Bool:", data2.length === 0);
+        setNoEntries({ status: data2.length === 0 });
         console.log("Parsed Type", typeof data2[0].creationDate);
         console.log("DAte formated:", data2[0].creationDate.toISOString());
       });
@@ -88,10 +100,12 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
         setSubtitle(book.subtitle);
         setAuthor(book.authors[0].name);
       });
-  }
 
-  function HandleSelection(id: string): void {
-    setSelectedEntry(id);
+    console.log(
+      "CoconutViewCard - # Coconut entries fetched : ",
+      entries.length,
+    );
+    console.log(`Test Bool: ${entries.length === 0}`);
   }
 
   function HandleBack() {
@@ -133,10 +147,12 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
         {entries.map((entry) => (
           <EntryCard key={entry.id} entry={entry} edit={false} /> // Render each entry using EntryCard component
         ))}
+        <EntryCard
+          key={noEntries.status ? "new-entry" : "blank-entry"}
+          edit={noEntries.status ? true : false}
+          entry={blankEntry}
+        />
       </div>
     </div>
   );
-}
-function setTitle(title: any) {
-  throw new Error("Function not implemented.");
 }

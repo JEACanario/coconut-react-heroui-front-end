@@ -15,6 +15,7 @@ type UserData = {
 interface ProviderProps {
   user: string | null;
   token: string;
+  cookie: string;
   login(data: LoginType): void;
   logout(): void;
 }
@@ -22,6 +23,7 @@ interface ProviderProps {
 const AuthContext = createContext<ProviderProps>({
   user: null,
   token: "",
+  cookie: "",
   login: () => {},
   logout: () => {},
 });
@@ -44,10 +46,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     : null;
   const [user, setUser] = useState<string | null>(storedInfo?.email);
   const [token, setToken] = useState(storedInfo?.token || "");
+  const [cookie, setCookie] = useState(storedInfo?.cookie || "");
 
   const login = async (data: LoginType): Promise<string> => {
     let t = "";
     let message = "";
+    let cookie = "";
 
     const obj = { email: data.email, token: t };
 
@@ -57,13 +61,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Credentials: "include",
         },
+        credentials: "include",
+        mode: "cors",
         method: "POST",
         body: JSON.stringify({ email: data.email, password: data.password }),
       });
 
       console.log(response);
       t = "";
+      console.log("Set-Cookie:", response.headers.get("set-cookie"));
+      cookie = response.headers.get("set-cookie") || "";
     } else {
       //token
       const response = await fetch(siteConfig.api_endpoints.login_token, {
@@ -78,10 +87,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response_data = await response.json();
       console.log(response_data);
       t = response_data.accessToken;
+      cookie = "";
     }
 
     setUser(data.email);
     setToken(t);
+    setCookie(cookie);
     localStorage.setItem("user", JSON.stringify(obj));
 
     return message;
@@ -94,7 +105,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, cookie, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
