@@ -14,6 +14,7 @@ import {
 import {
   getLocalTimeZone,
   parseAbsoluteToLocal,
+  parseZonedDateTime,
   today,
   ZonedDateTime,
 } from "@internationalized/date";
@@ -37,7 +38,9 @@ export default function EntryCard(props: EntryCardProps) {
       today(getLocalTimeZone()).toDate(getLocalTimeZone()).toISOString(),
     );
 
-  const [date, setDate] = useState<ZonedDateTime>(creationDate);
+  const [date, setDate] = useState<ZonedDateTime>(
+    parseZonedDateTime(creationDate.toString()),
+  );
   const [content, setContent] = useState(entry.content);
 
   console.log("EntryCard", entry);
@@ -52,14 +55,32 @@ export default function EntryCard(props: EntryCardProps) {
     entry.creationDate = date.toDate();
     creationDate = date;
     console.log("Changes saved for entry:", entry);
+    // Update the entry in the backend or state management as needed
+
+    var entry_payload = {
+      id: entry.id,
+      title: entry.title,
+      content: entry.content,
+      creationDate: entry.creationDate.toISOString().split("T")[0],
+      coconutId: entry.coconutId,
+    };
+
+    fetch(`${siteConfig.api_endpoints.entry_path}${entry.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+      credentials: "include",
+      body: JSON.stringify(entry_payload),
+    });
   }
 
   function handleSave(e: PressEvent): void {
-    if(entry.id !== ""){
-    saveChanges();
-    handleEdit(e);
-    console.log("Changes saved for entry:", entry);
-
+    if (entry.id !== "") {
+      saveChanges();
+      handleEdit(e);
+      console.log("Changes saved for entry:", entry);
     } else {
       // Creating a new entry
       const newEntryData = {

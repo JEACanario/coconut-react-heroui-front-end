@@ -45,6 +45,7 @@ export const siteConfig = {
     user_coconuts: "https://localhost:7260/coconut/",
     coconut_entries: "https://localhost:7260/coconut/",
     coconut_path: "https://localhost:7260/coconut/",
+    entry_path: "https://localhost:7260/entry/",
   },
   links: {
     github: "/",
