@@ -20,12 +20,18 @@ import {
 } from "@internationalized/date";
 import { useState } from "react";
 
-import { BaselineClear, BaselineEdit, BaselineSave } from "./icons";
+import {
+  BaselineClear,
+  BaselineDelete,
+  BaselineEdit,
+  BaselineSave,
+} from "./icons";
 import { siteConfig } from "@/config/site";
 
 export interface EntryCardProps {
   entry: Entry;
   edit: boolean;
+  onCreateOrDelete: () => void;
 }
 
 export default function EntryCard(props: EntryCardProps) {
@@ -86,28 +92,26 @@ export default function EntryCard(props: EntryCardProps) {
       const newEntryData = {
         title: title,
         content: content,
-        creationDate: date.toDate().toISOString(),
+        creationDate: date.toDate().toISOString().split("T")[0],
         coconutId: entry.coconutId,
       };
 
-      fetch(
-        `${siteConfig.api_endpoints.coconut_path}${entry.coconutId}/entry`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "cors",
-          credentials: "include",
-          body: JSON.stringify(newEntryData),
+      fetch(`${siteConfig.api_endpoints.entry_path}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      )
+        mode: "cors",
+        credentials: "include",
+        body: JSON.stringify(newEntryData),
+      })
         .then((response) => response.json())
         .then((data) => {
           console.log("New entry created:", data);
           // Update the entry with the returned data (like the new ID)
-          entry.id = data.id;
+          // entry.id = data.id;
           handleEdit(e);
+          props.onCreateOrDelete();
         })
         .catch((error) => {
           console.error("Error creating new entry:", error);
@@ -121,6 +125,34 @@ export default function EntryCard(props: EntryCardProps) {
     setDate(creationDate);
     handleEdit(e);
     console.log("Changes cleared for entry:", entry);
+  }
+
+  function handleDelete(e: PressEvent): void {
+    if (!confirm("Are you sure you want to delete this entry?")) {
+      return;
+    }
+
+    fetch(`${siteConfig.api_endpoints.entry_path}${entry.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Entry deleted successfully:", entry.id);
+          props.onCreateOrDelete();
+          // Notify parent component to remove this entry from the list
+          // You may want to add a callback prop like onDelete={() => props.onDelete(entry.id)}
+        } else {
+          console.error("Failed to delete entry:", response.status);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting entry:", error);
+      });
   }
 
   return (
@@ -138,6 +170,17 @@ export default function EntryCard(props: EntryCardProps) {
             />
           </div>
           <div className="gap-4 items-center flex justify-self-end">
+            {entry.id !== "" && edit && (
+              <Button
+                isIconOnly
+                aria-label="Delete"
+                color="danger"
+                variant="light"
+                onPress={handleDelete}
+              >
+                <BaselineDelete />
+              </Button>
+            )}
             {edit && (
               <Button
                 isIconOnly

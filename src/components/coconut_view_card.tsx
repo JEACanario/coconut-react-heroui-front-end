@@ -61,6 +61,7 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
         "Content-Type": "application/json",
       },
       method: "GET",
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -145,12 +146,13 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
       <div className="coconut-entry-list flex flex-start flex-col items-center gap-4 w-900">
         {/* Entry list */}
         {entries.map((entry) => (
-          <EntryCard key={entry.id} entry={entry} edit={false} /> // Render each entry using EntryCard component
+          <EntryCard key={entry.id} entry={entry} edit={false} onCreateOrDelete={() => GetCoconutEntries(props.coconut.id)}/> // Render each entry using EntryCard component
         ))}
         <EntryCard
           key={noEntries.status ? "new-entry" : "blank-entry"}
           edit={noEntries.status ? true : false}
-          entry={blankEntry}
+          entry={{ ...blankEntry, coconutId: props.coconut.id }}
+          onCreateOrDelete={() => GetCoconutEntries(props.coconut.id)}
         />
       </div>
     </div>

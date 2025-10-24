@@ -35,6 +35,7 @@ export default function CoconutController() {
         "Content-Type": "application/json",
       },
       method: "GET",
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => setCoconuts(data));
@@ -82,7 +83,7 @@ export default function CoconutController() {
 
       {start_new && <CoconutNew onNew={HandleCoconutCreated} />}
 
-      {/*       // If active_selection is true and active_selection is disabled, show the CoconutViewCard
+      {/*       // If active_selection is true and start_new is disabled, show the CoconutViewCard
       // Otherwise, show the list of coconuts */}
       {active_selection && !start_new ? (
         <CoconutViewCard coconut={selected_coconut} onBack={HandleBack} />
