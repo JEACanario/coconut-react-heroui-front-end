@@ -2,7 +2,7 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Checkbox } from "@heroui/checkbox";
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 
 import { useAuth } from "./auth_provider";
 

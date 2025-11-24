@@ -9,7 +9,6 @@ import {
   Textarea,
   Input,
   DatePicker,
-  PressEvent,
 } from "@heroui/react";
 import {
   getLocalTimeZone,
@@ -26,6 +25,7 @@ import {
   BaselineEdit,
   BaselineSave,
 } from "./icons";
+
 import { siteConfig } from "@/config/site";
 
 export interface EntryCardProps {
@@ -44,14 +44,10 @@ export default function EntryCard(props: EntryCardProps) {
       today(getLocalTimeZone()).toDate(getLocalTimeZone()).toISOString(),
     );
 
-  const [date, setDate] = useState<ZonedDateTime>(
-    parseZonedDateTime(creationDate.toString()),
-  );
+  const [date, setDate] = useState(parseZonedDateTime(creationDate.toString()));
   const [content, setContent] = useState(entry.content);
 
-  console.log("EntryCard", entry);
-
-  function handleEdit(e: PressEvent): void {
+  function handleEdit(): void {
     setEdit((prev) => !prev);
   }
 
@@ -60,7 +56,7 @@ export default function EntryCard(props: EntryCardProps) {
     entry.content = content;
     entry.creationDate = date.toDate();
     creationDate = date;
-    console.log("Changes saved for entry:", entry);
+
     // Update the entry in the backend or state management as needed
 
     var entry_payload = {
@@ -82,11 +78,10 @@ export default function EntryCard(props: EntryCardProps) {
     });
   }
 
-  function handleSave(e: PressEvent): void {
+  function handleSave(): void {
     if (entry.id !== "") {
       saveChanges();
-      handleEdit(e);
-      console.log("Changes saved for entry:", entry);
+      handleEdit();
     } else {
       // Creating a new entry
       const newEntryData = {
@@ -106,28 +101,23 @@ export default function EntryCard(props: EntryCardProps) {
         body: JSON.stringify(newEntryData),
       })
         .then((response) => response.json())
-        .then((data) => {
-          console.log("New entry created:", data);
+        .then(() => {
           // Update the entry with the returned data (like the new ID)
           // entry.id = data.id;
-          handleEdit(e);
+          handleEdit();
           props.onCreateOrDelete();
-        })
-        .catch((error) => {
-          console.error("Error creating new entry:", error);
         });
     }
   }
 
-  function handleClear(e: PressEvent): void {
+  function handleClear(): void {
     setTitle(entry.title);
     setContent(entry.content);
     setDate(creationDate);
-    handleEdit(e);
-    console.log("Changes cleared for entry:", entry);
+    handleEdit();
   }
 
-  function handleDelete(e: PressEvent): void {
+  function handleDelete(): void {
     if (!confirm("Are you sure you want to delete this entry?")) {
       return;
     }
@@ -139,20 +129,19 @@ export default function EntryCard(props: EntryCardProps) {
       },
       mode: "cors",
       credentials: "include",
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("Entry deleted successfully:", entry.id);
-          props.onCreateOrDelete();
-          // Notify parent component to remove this entry from the list
-          // You may want to add a callback prop like onDelete={() => props.onDelete(entry.id)}
-        } else {
-          console.error("Failed to delete entry:", response.status);
-        }
-      })
-      .catch((error) => {
-        console.error("Error deleting entry:", error);
-      });
+    }).then((response) => {
+      if (response.ok) {
+        props.onCreateOrDelete();
+        // Notify parent component to remove this entry from the list
+        // You may want to add a callback prop like onDelete={() => props.onDelete(entry.id)}
+      } else {
+      }
+    });
+  }
+
+  function setDateProxy(newDate: ZonedDateTime | null) {
+    if (newDate === null) return;
+    setDate(newDate);
   }
 
   return (
@@ -187,7 +176,7 @@ export default function EntryCard(props: EntryCardProps) {
                 aria-label="Like"
                 color="secondary"
                 variant={edit ? "faded" : "light"}
-                onPress={(e) => handleClear(e)}
+                onPress={() => handleClear()}
               >
                 <BaselineClear />
               </Button>
@@ -198,7 +187,7 @@ export default function EntryCard(props: EntryCardProps) {
                 aria-label="Like"
                 color="secondary"
                 variant={edit ? "faded" : "light"}
-                onPress={(e) => handleSave(e)}
+                onPress={() => handleSave()}
               >
                 <BaselineSave />
               </Button>
@@ -208,7 +197,7 @@ export default function EntryCard(props: EntryCardProps) {
                 aria-label="Like"
                 color="secondary"
                 variant={edit ? "faded" : "light"}
-                onPress={(e) => handleEdit(e)}
+                onPress={() => handleEdit()}
               >
                 <BaselineEdit />
               </Button>
@@ -231,12 +220,12 @@ export default function EntryCard(props: EntryCardProps) {
           <DatePicker
             hideTimeZone
             aria-label="entry date"
-            isReadOnly={!edit}
-            granularity="day"
             className="max-w-[284px]"
+            granularity="day"
+            isReadOnly={!edit}
             value={date}
             variant={edit ? "bordered" : "underlined"}
-            onChange={setDate}
+            onChange={setDateProxy}
           />
         </CardFooter>
       </Card>

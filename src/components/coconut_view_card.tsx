@@ -1,8 +1,11 @@
 import type { Entry } from "@/types/entry";
-import { dateInput, Image } from "@heroui/react";
-import { siteConfig } from "@/config/site";
+
 import { useEffect, useState } from "react";
+import { Image } from "@heroui/react";
+
 import EntryCard from "./entry_card";
+
+import { siteConfig } from "@/config/site";
 
 type Coconut = {
   id: string;
@@ -24,7 +27,7 @@ export interface CoconutViewCardProps {
 export default function CoconutViewCard(props: CoconutViewCardProps) {
   const [entries, setEntries] = useState(new Array<Entry>());
   const [noEntries, setNoEntries] = useState({ status: false });
-  const [selected_entry, setSelectedEntry] = useState(new Array<Entry>());
+
   const [coconut, setCoconut] = useState<Coconut>({
     id: "",
     status: "",
@@ -70,13 +73,8 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
           creationDate: new Date(entry.creationDate),
         }));
 
-        console.log("Parsed Coconut entries:", data2);
         setEntries(data2);
-        console.log("Entries set in state:", data2.length);
-        console.log("No Entries Bool:", data2.length === 0);
         setNoEntries({ status: data2.length === 0 });
-        console.log("Parsed Type", typeof data2[0].creationDate);
-        console.log("DAte formated:", data2[0].creationDate.toISOString());
       });
 
     // Set the cover URL and book info URL
@@ -101,12 +99,6 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
         setSubtitle(book.subtitle);
         setAuthor(book.authors[0].name);
       });
-
-    console.log(
-      "CoconutViewCard - # Coconut entries fetched : ",
-      entries.length,
-    );
-    console.log(`Test Bool: ${entries.length === 0}`);
   }
 
   function HandleBack() {
@@ -127,6 +119,8 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
     <div className="coconut-view-card flex gap-10 justify-between">
       <div className="coconut-details w-400">
         <h2>{title}</h2>
+        <h3>{subtitle}</h3>
+        <h4>by {author}</h4>
         {/* Left Side Image */}
         <button
           className="coconut-cover flex items-center justify-center"
@@ -146,7 +140,12 @@ export default function CoconutViewCard(props: CoconutViewCardProps) {
       <div className="coconut-entry-list flex flex-start flex-col items-center gap-4 w-900">
         {/* Entry list */}
         {entries.map((entry) => (
-          <EntryCard key={entry.id} entry={entry} edit={false} onCreateOrDelete={() => GetCoconutEntries(props.coconut.id)}/> // Render each entry using EntryCard component
+          <EntryCard
+            key={entry.id}
+            edit={false}
+            entry={entry}
+            onCreateOrDelete={() => GetCoconutEntries(props.coconut.id)}
+          /> // Render each entry using EntryCard component
         ))}
         <EntryCard
           key={noEntries.status ? "new-entry" : "blank-entry"}

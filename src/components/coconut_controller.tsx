@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+import { Button, Spacer } from "@heroui/react";
 
 import CoconutNew from "./coconut_new";
 import CoconutCard from "./coconut_card";
 import { useAuth } from "./auth_provider";
+import CoconutViewCard from "./coconut_view_card";
 
 import { siteConfig } from "@/config/site";
+
 import "../styles/coconut_controller.css";
-import CoconutViewCard from "./coconut_view_card";
-import { Button, select, Spacer } from "@heroui/react";
 
 type Coconut = {
   id: string;
@@ -21,15 +22,28 @@ type Coconut = {
   entries: string;
 };
 
+const COCONUT_BLANK: Coconut = {
+  id: "",
+  status: "",
+  isbn: "",
+  coverUrl: "",
+  startDate: "",
+  endDate: "",
+  userId: "",
+  user: "",
+  entries: "",
+};
+
 export default function CoconutController() {
   const auth = useAuth(); //might not be necessary, but useful for future auth checks
   const [active_selection, setActiveSelection] = useState(false);
   const [coconuts, setCoconuts] = useState(new Array<Coconut>());
-  const [selected_coconut, setSelectedCoconut] = useState<Coconut>();
+  const [selected_coconut, setSelectedCoconut] =
+    useState<Coconut>(COCONUT_BLANK);
   const [start_new, setStartNew] = useState(false);
 
   function GetUserCoconuts() {
-    fetch(siteConfig.api_endpoints.user_coconuts, {
+    fetch(siteConfig.api_endpoints.coconut_path, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -49,7 +63,6 @@ export default function CoconutController() {
   function HandleBack() {
     setSelectedCoconut({} as Coconut);
     setActiveSelection(false);
-    console.log(selected_coconut);
   }
 
   useEffect(
@@ -71,8 +84,8 @@ export default function CoconutController() {
   return (
     <>
       <Button
-        fullWidth={true}
         color="primary"
+        fullWidth={true}
         variant="light"
         onPress={HandleNewCoconut}
       >

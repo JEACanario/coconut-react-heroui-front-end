@@ -42,8 +42,6 @@ export const siteConfig = {
     register: "https://localhost:7260/register",
     login_cookie: "https://localhost:7260/login?useCookies=true",
     login_token: "https://localhost:7260/login",
-    user_coconuts: "https://localhost:7260/coconut/",
-    coconut_entries: "https://localhost:7260/coconut/",
     coconut_path: "https://localhost:7260/coconut/",
     entry_path: "https://localhost:7260/entry/",
   },
