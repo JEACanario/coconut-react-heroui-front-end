@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import {
   Card,
   CardFooter,
@@ -10,16 +11,18 @@ import {
 import { useState } from "react";
 import { debounce } from "ts-debounce";
 
-import { siteConfig } from "@/config/site";
+import { useAuth } from "./auth_provider";
 
 export interface CoconutNewProps {
   onNew: () => void;
 }
 
 export default function CoconutNew({ onNew }: CoconutNewProps) {
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const [newCoconutBook, setNewCoconutBook] = useState<Book | null>(null);
+  const auth = useAuth();
 
   type Book = {
     title: string;
@@ -29,14 +32,18 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
   };
 
   const handleSearch = (input: string) => {
+    if (input?.length >= 3) setQuery(input);
+
     setSelectedBook(null);
+
+    console.log("Searching for:", input);
 
     async function getResults(query: string) {
       const response = await fetch(
         `https://openlibrary.org/search.json?q=${query}&limit=10`,
       );
       const data = await response.json();
-
+      console.log("Search results:", data);
       setResults(data?.docs);
     }
 
@@ -56,6 +63,7 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
   };
 
   function handleSelect(book: Book): void {
+    console.log("Selected book:", book.olid);
     // If the book is already selected, deselect it
     // Otherwise, set it as the selected book
     if (book.olid == selectedBook) {
@@ -66,14 +74,19 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
     }
     setNewCoconutBook(book);
     setSelectedBook(book.olid);
+    console.log("New Coconut Book:", newCoconutBook);
   }
 
   async function createCoconut(e: PressEvent) {
+    console.log(`Creating coconut...`);
+    console.log("New Coconut Book at create:", newCoconutBook);
+
     e.target.classList.toggle("invisible");
     if (!newCoconutBook) {
+      console.error("No book selected for coconut creation.");
       return;
     }
-    // Template coconut data, will need to be adjusted based on backend requirements
+    // This will need to be replaced with additional data at some point
     const coconutData = {
       Id: 0,
       Status: 0,
@@ -86,7 +99,7 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
       Entries: [],
     };
 
-    await fetch(siteConfig.api_endpoints.coconut_path, {
+    const res = await fetch(siteConfig.api_endpoints.coconut_path, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -96,7 +109,6 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
       mode: "cors",
       body: JSON.stringify(coconutData),
     });
-
     onNew();
   }
 
@@ -114,8 +126,8 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
           placeholder="Search for a book by title"
           type="title"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            console.log("Input changed:", e.target.value);
             const func = debounce(() => handleSearch(e.target.value), 1000);
-
             func();
           }}
         />
@@ -129,12 +141,14 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
             (book) =>
               (!selectedBook || book.cover_edition_key === selectedBook) && (
                 <Card
-                  key={book.cover_edition_key}
-                  isFooterBlurred
                   isPressable
+                  isFooterBlurred
+                  key={book.cover_edition_key}
                   className="border-none"
                   radius="lg"
                   onPress={() => {
+                    console.log(`${book.cover_edition_key} ${book.title}`);
+
                     handleSelect({
                       olid: book.cover_edition_key,
                       title: book.title,
@@ -144,11 +158,11 @@ export default function CoconutNew({ onNew }: CoconutNewProps) {
                   }}
                 >
                   <Image
+                    src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
                     alt={book.title}
                     className="object-cover h-80"
-                    src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
                   />
-                  <CardFooter className="justify-between before:bg-white/10 border-white/20 flex-col border overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
+                  <CardFooter className="justify-between before:bg-white/10 border-white/20 flex-col border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
                     <p className="text-tiny text-white/80">{book.title}</p>
                     <p className="text-tiny text-white/80">
                       {" "}

@@ -1,11 +1,15 @@
-import { createContext, useContext, useState } from "react";
-
 import { siteConfig } from "@/config/site";
+import { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router";
 
 type LoginType = {
   email: string;
   password: string;
   remember: string;
+};
+
+type UserData = {
+  email: string;
 };
 
 interface ProviderProps {
@@ -65,8 +69,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         body: JSON.stringify({ email: data.email, password: data.password }),
       });
 
+      console.log(response);
       t = "";
-
+      console.log("Set-Cookie:", response.headers.get("set-cookie"));
       cookie = response.headers.get("set-cookie") || "";
     } else {
       //token
@@ -80,7 +85,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       const response_data = await response.json();
-
+      console.log(response_data);
       t = response_data.accessToken;
       cookie = "";
     }

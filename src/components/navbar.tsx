@@ -5,10 +5,13 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@heroui/navbar";
+import { link as linkStyles } from "@heroui/theme";
+import clsx from "clsx";
 
 import { useAuth } from "./auth_provider";
 import { LogOutButton } from "./user_controller";
 
+import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 // import { TwitterIcon, GithubIcon, DiscordIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
@@ -30,7 +33,7 @@ export const Navbar = () => {
           </Link>
         </NavbarBrand>
         <div className="hidden lg:flex gap-4 justify-start ml-2">
-          {/*           {siteConfig.navItems.map((item) => (
+{/*           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
                 className={clsx(
