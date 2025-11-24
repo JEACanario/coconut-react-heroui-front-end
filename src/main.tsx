@@ -9,7 +9,7 @@ import AuthProvider from "./components/auth_provider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/coconut-react-heroui-front-end">
       <AuthProvider>
         <Provider>
           <App />

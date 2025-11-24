@@ -2,12 +2,12 @@
   "name": "coconut-app",
   "private": true,
   "version": "0.7.0",
-  "homepage": "https://JEACanario.github.io/coconut-react-heroui-front-end",
+  "homepage": "https://jeacanario.github.io/coconut-react-heroui-front-end/",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d dist",
     "build": "tsc && vite build",
     "lint": "eslint -c .eslintrc.json ./src/**/**/*.{ts,tsx} --fix",
     "preview": "vite preview"
@@ -36,6 +36,7 @@
     "@react-types/shared": "3.32.1",
     "clsx": "2.1.1",
     "framer-motion": "12.23.24",
+    "gh-pages": "^6.3.0",
     "react": "19.2.0",
     "react-cookie": "^8.0.1",
     "react-dom": "19.2.0",
