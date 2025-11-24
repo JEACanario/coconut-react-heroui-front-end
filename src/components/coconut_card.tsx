@@ -52,7 +52,6 @@ export default function CoconutCard(details: CoconutCardProps) {
         <Image
           alt="Card background"
           className="object-cover rounded-xl wrapper"
-
           height={500}
           src={cover_url}
           width={300}
