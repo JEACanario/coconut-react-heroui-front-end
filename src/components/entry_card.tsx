@@ -150,7 +150,7 @@ export default function EntryCard(props: EntryCardProps) {
         <CardHeader className="flex justify-between items-center self-center">
           <div className="self-center">
             <Input
-              className="self-center justify-center  flex-grow"
+              className="self-center justify-center  grow"
               isReadOnly={!edit}
               placeholder="Enter your title"
               value={title}
