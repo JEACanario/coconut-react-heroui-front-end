@@ -7,7 +7,7 @@ import LoginForm from "./login_form";
 import RegistrationForm from "./registration_form";
 
 import { siteConfig } from "@/config/site";
-import { GithubIcon } from "@/components/icons";
+import { RegisterBook } from "@/components/icons";
 import { useAuth } from "@/components/auth_provider";
 
 import "../styles/user_controller.css";
@@ -68,7 +68,7 @@ export default function LandingLoginOptions() {
             loginHandler(event);
           }}
         >
-          <GithubIcon size={20} />
+          <RegisterBook size={20} />
           Create Account
         </Button>
       </div>

@@ -63,7 +63,7 @@ export default function RegistrationForm() {
       <p>{message}</p>
       <div className="flex gap-2">
         <Button color="primary" type="submit">
-          Submit
+          Register
         </Button>
         <Button type="reset" variant="flat">
           Reset
