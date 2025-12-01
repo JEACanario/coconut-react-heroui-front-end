@@ -96,6 +96,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     setUser(null);
     setToken("");
+    setCookie("");
     localStorage.removeItem("user");
   };
 
