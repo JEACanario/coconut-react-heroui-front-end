@@ -258,7 +258,7 @@ export function RegisterBook({
   width,
   height,
   ...props
-}: SVGProps<SVGSVGElement>) {
+}: IconSvgProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
