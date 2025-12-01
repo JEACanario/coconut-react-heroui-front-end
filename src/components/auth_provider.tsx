@@ -93,7 +93,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return message;
   };
 
+  const callLogoutEndpoint = async (): Promise<boolean> => {
+    try {
+      const endpoint = siteConfig.api_endpoints.logout;
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        mode: "cors",
+        body: JSON.stringify({ email: user }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
   const logout = () => {
+    void callLogoutEndpoint();
     setUser(null);
     setToken("");
     setCookie("");
