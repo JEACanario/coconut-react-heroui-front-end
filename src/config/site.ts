@@ -46,7 +46,7 @@ export const siteConfig = {
     coconut_entries: "https://coconut-gtcrbzgmckekarcb.westeurope-01.azurewebsites.net/coconut/",
     coconut_path: "https://coconut-gtcrbzgmckekarcb.westeurope-01.azurewebsites.net/coconut/",
     entry_path: "https://coconut-gtcrbzgmckekarcb.westeurope-01.azurewebsites.net/entry/",
-    logout: "https://coconut-gtcrbzgmckekarcb.westeurope-01.azurewebsites.net/logout",
+    logout: "https://coconut-gtcrbzgmckekarcb.westeurope-01.azurewebsites.net/AppUser/logout",
   },
   links: {
     github: "/",
