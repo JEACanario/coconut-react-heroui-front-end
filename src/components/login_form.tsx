@@ -18,7 +18,9 @@ export default function LoginForm() {
       auth.login({
         email: data.Email as string,
         password: data.Password as string,
-        remember: data.Remember as string,
+
+        //remember me funnctionality to be implemented later
+        remember: "true",
       });
     }
   };
@@ -57,9 +59,9 @@ export default function LoginForm() {
         </Button>
       </div>
 
-      <Checkbox defaultSelected name="Remember" size="sm" value="true">
+      {/*  <Checkbox defaultSelected name="Remember" size="sm" value="true">
         Remember me?
-      </Checkbox>
+      </Checkbox> */}
     </Form>
   );
 }
