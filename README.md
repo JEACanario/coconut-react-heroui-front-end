@@ -7,6 +7,7 @@ Please allow some time for the backend API to spin up if it's the first visit of
 
 ToDo(s): 
 
+[Ongoing] Guest account functionality or some other sort of preview
 Overall Beautification - development so far has been focused on functionality
 Responsivenss - work on CSS to improve usability in smaller devices
 AI features - experiment with voice recognition for entry generation, this would make the app more mobile friendly. AI generation of reports from entry 
