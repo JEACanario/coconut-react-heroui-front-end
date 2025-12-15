@@ -114,6 +114,7 @@ export default function LandingLoginOptions() {
         >
           <span>
             Try a non-permanent <Code color="primary">guest account</Code>
+            <Code color="warning"> Feature currently undergoing rework. Accounts can be created with any e-mail-like address </Code>
           </span>
         </Button>
       </div>
